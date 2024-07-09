@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class CustomGoogleMap extends StatefulWidget {
@@ -11,6 +12,8 @@ class CustomGoogleMap extends StatefulWidget {
 class _CustomGoogleMapState extends State<CustomGoogleMap> {
   late CameraPosition initialCameraPosition;
   late GoogleMapController _googleMapController;
+  String? _mapStyle;
+
   @override
   void initState() {
     //zoom level (guess)
@@ -24,7 +27,16 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
       target: LatLng(29.982046652658944, 31.13728546509986), //Pyramids
       zoom: 10,
     );
+    _loadMapStyle();
     super.initState();
+  }
+
+  Future<void> _loadMapStyle() async {
+    String style =
+        await rootBundle.loadString('assets/map_styles/night_map_style.json');
+    setState(() {
+      _mapStyle = style;
+    });
   }
 
   @override
@@ -39,6 +51,7 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
     return Stack(
       children: [
         GoogleMap(
+          style: _mapStyle,
           onMapCreated: (controller) {
             _googleMapController = controller;
           },
