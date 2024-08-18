@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:maps_app/features/home/presentation/pages/home_view.dart';
+import 'package:maps_app/features/home/presentation/views/home_view.dart';
 
 void main() {
   runApp(const MyApp());

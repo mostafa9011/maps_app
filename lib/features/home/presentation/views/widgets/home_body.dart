@@ -11,7 +11,9 @@ class HomeBody extends StatelessWidget {
         SizedBox(
           height: 100,
         ),
-        Expanded(child: CustomGoogleMap()),
+        Expanded(
+          child: CustomGoogleMap(),
+        ),
         SizedBox(
           height: 100,
         ),

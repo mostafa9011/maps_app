@@ -1,9 +1,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--  Required permissions to use the app  -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+    
     <application
         android:label="maps_app"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 
+         <!--  Google Maps API_KEY    -->
         <meta-data android:name="com.google.android.geo.API_KEY"
                android:value="AIzaSyBn-lyuMmfsa_XIhJ4o4Bpt1vbTT3EIMYM"/>
 
