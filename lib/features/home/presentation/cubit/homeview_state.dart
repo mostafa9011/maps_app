@@ -1,10 +1,5 @@
 part of 'homeview_cubit.dart';
 
-abstract class HomeviewState extends Equatable {
-  const HomeviewState();
-
-  @override
-  List<Object> get props => [];
-}
+abstract class HomeviewState {}
 
 class HomeviewInitial extends HomeviewState {}

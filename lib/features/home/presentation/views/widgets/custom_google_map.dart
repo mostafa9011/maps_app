@@ -1,5 +1,7 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:maps_app/utils/services/location_service.dart';
 
 class CustomGoogleMap extends StatefulWidget {
   const CustomGoogleMap({super.key});
@@ -10,11 +12,13 @@ class CustomGoogleMap extends StatefulWidget {
 
 class _CustomGoogleMapState extends State<CustomGoogleMap> {
   late CameraPosition initialCameraPosition;
-  late GoogleMapController _googleMapController;
+  GoogleMapController? _googleMapController;
   // String? _mapStyle;
+  final LocationService _locationService = LocationService.instance;
 
   @override
   void initState() {
+    super.initState();
     //zoom level (guess)
     //world view =========> 0:3
     //country view =======> 4:6
@@ -27,9 +31,9 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
       zoom: 10,
     );
 
-    // _loadMapStyle();
+    _locationService.displayLocation();
 
-    super.initState();
+    // _loadMapStyle();
   }
 
   // Future<void> _loadMapStyle() async {
@@ -42,7 +46,7 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
 
   @override
   void dispose() {
-    _googleMapController.dispose();
+    _googleMapController!.dispose();
     super.dispose();
   }
 
@@ -51,8 +55,26 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
     // var mediaQuery = MediaQuery.of(context).size;
     return GoogleMap(
       // style: _mapStyle,
-      onMapCreated: (controller) {
+      onMapCreated: (controller) async {
         _googleMapController = controller;
+
+        _locationService.getRealTimeLocationDate(
+          (locationDate) {
+            log("New location data: $locationDate");
+
+            _googleMapController?.animateCamera(
+              CameraUpdate.newCameraPosition(
+                CameraPosition(
+                  target: LatLng(
+                    locationDate.latitude!,
+                    locationDate.longitude!,
+                  ),
+                  zoom: 10,
+                ),
+              ),
+            );
+          },
+        );
       },
       initialCameraPosition: initialCameraPosition,
     );
