@@ -9,8 +9,6 @@ class LocationService {
   }
 
   final _location = Location();
-  // late PermissionStatus _permissionGranted;
-  // late LocationData? locationData;
 
   Future<bool> checkAndEnableLocationService() async {
     bool serviceEnabled = await _location.serviceEnabled();
@@ -40,9 +38,10 @@ class LocationService {
     return true;
   }
 
-  Future<LocationData?> getLocationDate() async {
+  Future<LocationData?> getCurrentLocation() async {
+    bool serviceEnabled = await checkAndEnableLocationService();
     bool hasPermission = await checkAndEnableLocationPerrmission();
-    if (hasPermission) {
+    if (hasPermission && serviceEnabled) {
       LocationData locationData = await _location.getLocation();
       log("location data: $locationData");
       return locationData;
@@ -50,16 +49,11 @@ class LocationService {
     return null;
   }
 
-  getRealTimeLocationDate(void Function(LocationData)? onData) async {
+  getRealTimeLocation(void Function(LocationData)? onData) async {
+    bool serviceEnabled = await checkAndEnableLocationService();
     bool hasPermission = await checkAndEnableLocationPerrmission();
-    if (hasPermission) {
+    if (hasPermission && serviceEnabled) {
       _location.onLocationChanged.listen(onData);
     }
-  }
-
-  Future<void> displayLocation() async {
-    await checkAndEnableLocationService();
-    await checkAndEnableLocationPerrmission();
-    getLocationDate();
   }
 }

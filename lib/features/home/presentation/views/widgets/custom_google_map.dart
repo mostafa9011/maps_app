@@ -15,6 +15,7 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
   GoogleMapController? _googleMapController;
   // String? _mapStyle;
   final LocationService _locationService = LocationService.instance;
+  Set<Marker> markers = {};
 
   @override
   void initState() {
@@ -31,7 +32,7 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
       zoom: 10,
     );
 
-    _locationService.displayLocation();
+    _locationService.getCurrentLocation();
 
     // _loadMapStyle();
   }
@@ -55,26 +56,36 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
     // var mediaQuery = MediaQuery.of(context).size;
     return GoogleMap(
       // style: _mapStyle,
+      markers: markers,
       onMapCreated: (controller) async {
         _googleMapController = controller;
 
-        _locationService.getRealTimeLocationDate(
-          (locationDate) {
-            log("New location data: $locationDate");
+        var locationData = await _locationService.getCurrentLocation();
+        if (locationData != null) {
+          log("New location data: $locationData");
+          var marker = Marker(
+            markerId: const MarkerId("1"),
+            position: LatLng(
+              locationData.latitude!,
+              locationData.longitude!,
+            ),
+          );
 
-            _googleMapController?.animateCamera(
-              CameraUpdate.newCameraPosition(
-                CameraPosition(
-                  target: LatLng(
-                    locationDate.latitude!,
-                    locationDate.longitude!,
-                  ),
-                  zoom: 10,
+          setState(() {
+            markers.add(marker);
+          });
+          _googleMapController?.animateCamera(
+            CameraUpdate.newCameraPosition(
+              CameraPosition(
+                target: LatLng(
+                  locationData.latitude!,
+                  locationData.longitude!,
                 ),
+                zoom: 10,
               ),
-            );
-          },
-        );
+            ),
+          );
+        }
       },
       initialCameraPosition: initialCameraPosition,
     );
